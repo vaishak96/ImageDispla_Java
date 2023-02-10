@@ -38,6 +38,7 @@ public class ImageDisplay {
 		System.out.println("The number of lines is: " + n);
 		double s = Double.parseDouble(args[1]);
 		System.out.println("The scaling factor is: " + s);
+		int alias=Integer.parseInt(args[2]);
 
 		double stepSize = 360 / n;
 		// Initialize a plain white image
@@ -80,7 +81,7 @@ public class ImageDisplay {
 		JLabel lbText2 = new JLabel("Image after modification (Right)");
 		lbText2.setHorizontalAlignment(SwingConstants.CENTER);
 		lbIm1 = new JLabel(new ImageIcon(img));
-		convertImgToImg1(img, img1, s);
+		convertImgToImg1(img, img1, s,alias);
 		lbIm2 = new JLabel(new ImageIcon(img1));
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -159,15 +160,51 @@ public class ImageDisplay {
 		return res;
 	}
 
-	private void convertImgToImg1(BufferedImage img, BufferedImage img1, double s) {
+	private void convertImgToImg1(BufferedImage img, BufferedImage img1, double s,int alias) {
 		int scaledWidth = (int) (width * s);
 		int scaledHeight = (int) (height * s);
-		for (int x = 0; x < scaledWidth; x++) {
-			for (int y = 0; y < scaledHeight; y++) {
-				img1.setRGB(x, y, img.getRGB((int) (x / s), (int) (y / s)));
+		if(alias==0)
+		{
+			for (int x = 0; x < scaledWidth; x++) {
+				for (int y = 0; y < scaledHeight; y++) {
+					img1.setRGB(x, y, img.getRGB((int) (x / s), (int) (y / s)));
+				}
 			}
 		}
+		else if(alias==1)
+		{  int x_old=0;
+		   int y_old=0;
+           double pixel_sum=0.0;
+		   int avg_count=0;
+		   int avg_pixel=0;
+			for (int x = 0; x < scaledWidth; x++) {
+			for (int y = 0; y < scaledHeight; y++)
+			{   
+				 x_old=(int)(x/s)-1;
+				 y_old=(int)(y/s)-1;
+				 for(int i=0;i<3;i++){
+					for(int j=0;j<3;j++){
+						if((x_old<512) && (y_old<512)&&(x_old>=0)&&(y_old>=0))
+						{ 
+							pixel_sum +=img.getRGB(x_old, y_old);
+							avg_count++;
+
+
+						}
+
+					}
+				 }
+				 avg_pixel=(int)(pixel_sum/avg_count);
+				 img1.setRGB(x, y,avg_pixel );
+				  pixel_sum=0.0;
+				  avg_count=0;
+				  avg_pixel=0;
+
+			}
+
+		}
 	}
+}
 
 	public static void main(String[] args) {
 		ImageDisplay ren = new ImageDisplay();

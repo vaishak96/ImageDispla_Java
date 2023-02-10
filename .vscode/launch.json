@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "ImageDisplay",
             "projectName": "ImageDisplay_Java_8eff126b",
-            "args": "16 0.5 0"
+            "args": "20 0.5 1"
         }
     ]
 }
